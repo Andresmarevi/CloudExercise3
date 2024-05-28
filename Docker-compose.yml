@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  flask-app_1: 
+    build: .
+    ports:
+      - "3001:8080" 
+    depends_on:
+      - db
+    environment:
+      MONGO_URI: "mongodb://$MONGO_USERNAME:$MONGO_PASSWORD@db:27017/db"
+    command: ["python", "app.py"]
+    env_file:
+      - .env
+
+  flask-app_2: 
+    build: .
+    ports:
+      - "3002:8080"  
+    depends_on:
+      - db
+    environment:
+      MONGO_URI: "mongodb://$MONGO_USERNAME:$MONGO_PASSWORD@db:27017/db"
+    command: ["python", "app.py"]
+    env_file:
+      - .env
+
+  flask-app_3: 
+    build: .
+    ports:
+      - "3003:8080"  
+    depends_on:
+      - db
+    environment:
+      MONGO_URI: "mongodb://$MONGO_USERNAME:$MONGO_PASSWORD@db:27017/db"
+    command: ["python", "app.py"]
+    env_file:
+      - .env
+
+  db:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+  haproxy:
+    build: ./haproxy
+    ports:
+      - "80:80"
+    depends_on:
+      - flask-app_1
+      - flask-app_2
+      - flask-app_3 
